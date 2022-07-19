@@ -13,6 +13,7 @@ const UserSchema = new mongoose.Schema(
     },
     email: {
       type: String,
+      unique: true,
       required: [true, "PLEASE ENTER YOUR EMAIL ADDRESS"],
       trim: true,
       validate: {
@@ -52,5 +53,16 @@ UserSchema.pre("save", async function () {
 
   user.password = await bcrypt.hash(user.password, salt);
 });
+
+//Check if password is correct
+UserSchema.methods.comparePassword = async function (userPassword) {
+  const user = this;
+  const isMatch = await bcrypt.compare(userPassword, user.password);
+
+  if (!isMatch) {
+    throw new Error("INVALID CREDENTIALS");
+  }
+  return isMatch;
+};
 
 module.exports = mongoose.model("User", UserSchema);
