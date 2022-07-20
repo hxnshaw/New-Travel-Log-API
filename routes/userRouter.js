@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
-
+const {
+  authenticateUser,
+  authorizePermissions,
+} = require("../middlewares/authentication");
 const {
   getAllUsers,
   getSingleUser,
@@ -10,16 +13,25 @@ const {
   updateUserPassword,
 } = require("../controllers/userController");
 
-router.route("/").get(getAllUsers);
+router
+  .route("/")
+  .get([authenticateUser, authorizePermissions("admin")], getAllUsers);
 
-router.route("/myProfile").get(showUserProfile);
+router.route("/myProfile").get(authenticateUser, showUserProfile);
 
-router.route("/updateMyProfile").patch(updateUserProfile);
+router.route("/updateMyProfile").patch(authenticateUser, updateUserProfile);
 
-router.route("/updateMyPassword").patch(updateUserPassword);
+router.route("/updateMyPassword").patch(authenticateUser, updateUserPassword);
 
-router.route("/deleteMyAccount").delete(deleteUserAccount);
+router
+  .route("/deleteMyAccount")
+  .delete(
+    [authenticateUser, authorizePermissions("admin", "user")],
+    deleteUserAccount
+  );
 
-router.route("/:id").get(getSingleUser);
+router
+  .route("/:id")
+  .get([authenticateUser, authorizePermissions("admin")], getSingleUser);
 
 module.exports = router;

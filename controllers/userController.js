@@ -1,25 +1,68 @@
+const User = require("../models/User");
+const { StatusCodes } = require("http-status-codes");
+const CustomError = require("../errors");
+const { createTokenUser, attachCookiesToResponse } = require("../utils");
+
 const getAllUsers = async (req, res) => {
-  res.send("getAllUsers");
+  const users = await User.find({ role: "user" }).select("-password");
+  res.status(StatusCodes.OK).json({ users });
 };
 
 const getSingleUser = async (req, res) => {
-  res.send("getSingleUser");
+  const user = await User.findOne({ _id: req.params.id }).select("-password");
+
+  if (!user) {
+    throw new CustomError.NotFoundError(`NO USER WITH id:${req.params.id}`);
+  }
+  res.status(StatusCodes.OK).json({ user });
 };
 
 const showUserProfile = async (req, res) => {
-  res.send("showUserProfile");
+  res.status(StatusCodes.OK).json({ user: req.user });
 };
 
 const updateUserPassword = async (req, res) => {
-  res.send("updateUserPasswords");
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    throw new CustomError.BadRequestError("PLEASE ENTER VALID CREDENTIALS");
+  }
+  const user = await User.findOne({ _id: req.user.userId });
+
+  const isValidPassword = await user.comparePassword(currentPassword);
+
+  if (!isValidPassword) {
+    throw new CustomError.UnauthenticatedError(
+      "PLEASE ENTER VALID CREDENTIALS"
+    );
+  }
+  user.password = newPassword;
+
+  await user.save();
+  res.status(StatusCodes.OK).json({ msg: "PASSWORD CHANGE SUCCESSFUL" });
 };
 
 const updateUserProfile = async (req, res) => {
-  res.send("updateUserProfile");
+  const { name, email, age } = req.body;
+
+  if (!name || !email || !age) {
+    throw new CustomError.BadRequestError("PLEASE ENTER VALID CREDENTIALS");
+  }
+  const user = await User.findOne({ _id: req.user.userId });
+
+  user.name = name;
+  user.email = email;
+  user.age = age;
+
+  await user.save();
+  const tokenUser = createTokenUser(user);
+  attachCookiesToResponse({ res, user: tokenUser });
+  res.status(StatusCodes.OK).json({ msg: "PROFILE UPDATED SUCCESSFULLY" });
 };
 
 const deleteUserAccount = async (req, res) => {
-  res.send("deleteUserAccount");
+  const user = await User.findOneAndDelete({ _id: req.user.userId });
+  res.status(StatusCodes.OK).json({ msg: "PROFILE DELETED SUCCESSFULLY" });
 };
 
 module.exports = {
