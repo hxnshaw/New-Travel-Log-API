@@ -17,7 +17,7 @@ const PostSchema = new mongoose.Schema(
         "PLEASE PROVIDE THE DETAILS AND DESCRIPTION OF THE LOCATION",
       ],
       minlength: 10,
-      maxlength: 250,
+      maxlength: 1000,
     },
     image: {
       type: String,
