@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { authenticateUser } = require("../middlewares/authentication");
 
 const {
   createComment,
@@ -9,12 +10,15 @@ const {
   deleteComment,
 } = require("../controllers/commentController");
 
-router.route("/").post(createComment).get(getAllComments);
+router
+  .route("/")
+  .post(authenticateUser, createComment)
+  .get(authenticateUser, getAllComments);
 
 router
   .route("/:id")
-  .get(getSingleComment)
-  .patch(updateComment)
-  .delete(deleteComment);
+  .get(authenticateUser, getSingleComment)
+  .patch(authenticateUser, updateComment)
+  .delete(authenticateUser, deleteComment);
 
 module.exports = router;
