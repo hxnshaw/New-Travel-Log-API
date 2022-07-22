@@ -24,6 +24,7 @@ const connectDB = require("./db/connect");
 const authRouter = require("./routes/authRouter");
 const userRouter = require("./routes/userRouter");
 const postRouter = require("./routes/postRouter");
+const commentRouter = require("./routes/commentRouter");
 
 //REQUIRE NOT-FOUND AND ERRORHANDLER MIDDLEWARES
 const notFoundMiddleware = require("./middlewares/not-found");
@@ -38,10 +39,10 @@ app.use(fileUpload({ useTempFiles: true }));
 app.use("/api/v3/auth", authRouter);
 app.use("/api/v3/users", userRouter);
 app.use("/api/v3/posts", postRouter);
+app.use("/api/v3/comments", commentRouter);
 
 app.get("/", (req, res) => {
-  res.send("HOMEPAGE");
-  return console.log("Home Page");
+  res.send("<h3>TRAVEL-LOG</h3>");
 });
 
 app.use(notFoundMiddleware);
