@@ -5,7 +5,7 @@ const { createTokenUser, attachCookiesToResponse } = require("../utils");
 
 const getAllUsers = async (req, res) => {
   const users = await User.find({ role: "user" }).select("-password");
-  res.status(StatusCodes.OK).json({ users });
+  res.status(StatusCodes.OK).json({ TOTAL_NO_OF_USERS: users.length, users });
 };
 
 const getSingleUser = async (req, res) => {
