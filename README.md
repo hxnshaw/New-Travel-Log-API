@@ -1,5 +1,5 @@
 ## New-Travel-Log-API
-**INTRODUCTION
+## INTRODUCTION
 This is the API of a travel blog website, where users can register and upload pictures of different places they visited.
 They can either recommend the pplace or not to other users based on their experience.
 
