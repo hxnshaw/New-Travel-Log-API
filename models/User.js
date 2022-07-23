@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
+const Post = require("./Post");
 
 const UserSchema = new mongoose.Schema(
   {
@@ -64,5 +65,13 @@ UserSchema.methods.comparePassword = async function (userPassword) {
   }
   return isMatch;
 };
+
+//Delete Post when the creator is deleted
+UserSchema.pre("remove", async function (next) {
+  const user = this;
+  await Post.deleteMany({ creator: user._id });
+  console.log(user._id);
+  next();
+});
 
 module.exports = mongoose.model("User", UserSchema);

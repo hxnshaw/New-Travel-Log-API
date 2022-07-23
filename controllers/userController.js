@@ -18,6 +18,11 @@ const getSingleUser = async (req, res) => {
 };
 
 const showUserProfile = async (req, res) => {
+  const userId = req.user.userId;
+  const user = await User.findOne({ _id: userId });
+  if (!user) {
+    throw new CustomError.NotFoundError(` USER DOES NOT EXIST`);
+  }
   res.status(StatusCodes.OK).json({ user: req.user });
 };
 
@@ -60,8 +65,15 @@ const updateUserProfile = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "PROFILE UPDATED SUCCESSFULLY" });
 };
 
+// const deleteUserAccount = async (req, res) => {
+//   const user = await User.findOneAndDelete({ _id: req.user.userId });
+//   res.status(StatusCodes.OK).json({ msg: "PROFILE DELETED SUCCESSFULLY" });
+// };
 const deleteUserAccount = async (req, res) => {
-  const user = await User.findOneAndDelete({ _id: req.user.userId });
+  const userId = req.user.userId;
+  const user = await User.findOne({ _id: userId });
+  await user.remove();
+
   res.status(StatusCodes.OK).json({ msg: "PROFILE DELETED SUCCESSFULLY" });
 };
 
