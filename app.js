@@ -10,6 +10,12 @@ const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
+//security packages
+const cors = require("cors");
+const mongoSanitize = require("express-mongo-sanitize");
+const rateLimiter = require("express-rate-limit");
+const helmet = require("helmet");
+const xss = require("xss-clean");
 
 //CLOUDINARY CONFIGURATION
 cloudinary.config({
@@ -29,6 +35,19 @@ const commentRouter = require("./routes/commentRouter");
 //REQUIRE NOT-FOUND AND ERRORHANDLER MIDDLEWARES
 const notFoundMiddleware = require("./middlewares/not-found");
 const errorHandlerMiddleware = require("./middlewares/error-handler");
+
+//setup security
+app.set("trust proxy", 1);
+app.use(
+  rateLimiter({
+    windowMs: 10 * 60 * 1000, //10 minutes
+    max: 20, //20 requests per 10 minutes,
+  })
+);
+app.use(helmet());
+app.use(cors());
+app.use(xss());
+app.use(mongoSanitize());
 
 app.use(morgan("tiny"));
 app.use(express.json());
