@@ -22,10 +22,12 @@ const getSinglePost = async (req, res) => {
 };
 
 const getAllPosts = async (req, res) => {
-  const posts = await Post.find({}).populate({
-    path: "creator",
-    select: "name",
-  });
+  const posts = await Post.find({})
+    .populate({
+      path: "creator",
+      select: "name",
+    })
+    .populate("comment");
   res.status(StatusCodes.OK).json({ posts });
 };
 

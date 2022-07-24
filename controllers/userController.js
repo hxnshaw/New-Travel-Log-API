@@ -72,6 +72,10 @@ const updateUserProfile = async (req, res) => {
 const deleteUserAccount = async (req, res) => {
   const userId = req.user.userId;
   const user = await User.findOne({ _id: userId });
+  res.cookie("token", "deleteUser", {
+    httpOnly: true,
+    expiresIn: new Date(Date.now()),
+  });
   await user.remove();
 
   res.status(StatusCodes.OK).json({ msg: "PROFILE DELETED SUCCESSFULLY" });
