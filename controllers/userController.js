@@ -70,8 +70,10 @@ const updateUserProfile = async (req, res) => {
 //   res.status(StatusCodes.OK).json({ msg: "PROFILE DELETED SUCCESSFULLY" });
 // };
 const deleteUserAccount = async (req, res) => {
+  //check if user exists
   const userId = req.user.userId;
   const user = await User.findOne({ _id: userId });
+  //delete token
   res.cookie("token", "deleteUser", {
     httpOnly: true,
     expiresIn: new Date(Date.now()),
