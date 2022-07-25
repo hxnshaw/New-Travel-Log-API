@@ -26,6 +26,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
+  //Check if the user submitted an empty form.
   if (!email || !password) {
     throw new CustomError.BadRequestError("PLEASE PROVIDE EMAIL AND PASSWORD");
   }
@@ -50,7 +51,7 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   res.cookie("token", "logout", {
     httpOnly: true,
-    expires: new Date(Date.now()),
+    expires: new Date(Date.now()), //Removes the token from the user object.
   });
   res.status(StatusCodes.OK).json({ msg: "Success" });
 };
