@@ -21,7 +21,7 @@ const getAllComments = async (req, res) => {
     path: "user",
     select: "name",
   });
-  res.status(StatusCodes.CREATED).json({ comments });
+  res.status(StatusCodes.OK).json({ comments });
 };
 
 const getSingleComment = async (req, res) => {

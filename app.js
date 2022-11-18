@@ -40,7 +40,7 @@ const errorHandlerMiddleware = require("./middlewares/error-handler");
 app.set("trust proxy", 1);
 app.use(
   rateLimiter({
-    windowMs: 10 * 60 * 1000, //10 minutes
+    windowMs: 20 * 60 * 1000, //10 minutes
     max: 100, //100 requests per 10 minutes,
   })
 );
